@@ -1,0 +1,8 @@
+/*
+cart item is saved in shared pref
+
+need to show way how to get config data model so that i need to get it now becaouse to check avliable product in
+card product
+need to check network first and then if netwrok is avalible go to call api to get config module
+else naivget to no netwrok screen
+ */
