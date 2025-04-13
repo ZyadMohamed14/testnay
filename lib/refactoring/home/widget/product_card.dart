@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:testnay/app_constants.dart';
@@ -13,6 +14,8 @@ import '../../../core/helper/price_conventer_helper.dart';
 import '../../../core/helper/product_helper.dart';
 import '../../../utill/images.dart';
 import '../../../utill/styles.dart';
+import '../../cart/cart_bottom_sheet.dart';
+import '../../cart/cart_cubit.dart';
 import '../home_screen.dart';
 import 'add_to_cart_button.dart';
 
@@ -66,15 +69,17 @@ class ProductCardWidget extends StatelessWidget {
 }
 class ProductImage extends StatelessWidget {
   final Product product;
+
   final ConfigModel configModel;
   // Determine if the current language is LTR (English) or RTL (Arabic)
   // 'ar' is for Arabic, others are typically LTR
   bool isArabicLanguage = Get.locale?.languageCode == 'ar';
 
-  ProductImage({super.key, required this.product,required this.configModel});
+  ProductImage({super.key, required this.product,required this.configModel, });
 
   @override
   Widget build(BuildContext context) {
+    final cartCubit = context.read<CartCubit>();
    product.discount!=10;
     bool isAvailable = ProductHelper.isProductAvailable(product: product);
     bool isAvailableInStock = ProductHelper.checkStock(product);
@@ -82,12 +87,27 @@ class ProductImage extends StatelessWidget {
     return Stack(
       children: [
         /// product Image
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: CustomImageWidget(image: '${AppConstants.baseProductssImageUrl}${product.image}',
-          height: 150,
-          width: 220,
-          fit: BoxFit.cover
+        InkWell(
+          onTap: (){
+            final cartItem = cartCubit.cartItems
+                .firstWhereOrNull((item) => item.product?.id == product.id);
+
+            showModalBottomSheet(
+              context: context,
+              builder: (context) => CartBottomSheetWidget(
+                cartModel: cartItem ?? null,
+                configModel: configModel,
+              ),
+            );
+
+   },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: CustomImageWidget(image: '${AppConstants.baseProductssImageUrl}${product.image}',
+            height: 150,
+            width: 220,
+            fit: BoxFit.cover
+            ),
           ),
         ),
         /// Wish Button

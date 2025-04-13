@@ -78,6 +78,10 @@ class CartModel {
   set quantity(int? qty) => _quantity = qty;
   double? get taxAmount => _taxAmount;
   List<AddOn>? get addOnIds => _addOnIds;
+  set addOnIds(List<AddOn>? value) {
+    _addOnIds = value;
+  }
+
   Product? get product => _product;
   List<List<bool?>>? get variations => _variations;
 
@@ -114,6 +118,10 @@ class CartModel {
     }
   }
 
+  CartModel.CopyWith(this._price, this._discountedPrice, this._variation,
+      this._discountAmount, this._quantity, this._taxAmount, this._addOnIds,
+      this._product, this._variations);
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['price'] = _price;
@@ -131,13 +139,20 @@ class CartModel {
     data['variations'] = _variations;
     return data;
   }
+
 }
 
 class AddOn {
   int? _id;
   int? _quantity;
+  bool isSelected;
 
-  AddOn({int? id, int? quantity}) {
+
+  AddOn({
+    int? id,
+    int? quantity,
+    this.isSelected = false, // Default value
+  }) {
     _id = id;
     _quantity = quantity;
   }
@@ -145,7 +160,8 @@ class AddOn {
   int? get id => _id;
   int? get quantity => _quantity;
 
-  AddOn.fromJson(Map<String, dynamic> json) {
+  // Updated fromJson with default isSelected
+  AddOn.fromJson(Map<String, dynamic> json) : isSelected = false {
     _id = json['id'];
     _quantity = json['quantity'];
   }

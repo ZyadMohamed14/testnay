@@ -40,7 +40,7 @@ class ConfigRepository {
     );
   }
 
-  ConfigModel? getCachedConfig() {
+   ConfigModel? getCachedConfig() {
     final configJson = sharedPreferences.getString(_configKey);
     if (configJson != null) {
       return ConfigModel.fromJson(jsonDecode(configJson));

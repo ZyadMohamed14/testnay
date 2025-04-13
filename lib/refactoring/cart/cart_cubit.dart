@@ -1,6 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:get/get.dart';
 import 'package:meta/meta.dart';
+import 'package:testnay/di_container.dart';
+import 'package:testnay/refactoring/config/config_repo.dart';
+import 'package:testnay/refactoring/config/configration_model.dart';
 
 import 'cart_repo.dart';
 
@@ -9,6 +12,8 @@ part 'cart_state.dart';
 class CartCubit extends Cubit<CartState> {
   final CartRepository cartRepo;
     List<CartModel>cartItems=[];
+    double totalPrice =0.0;
+    late ConfigModel configModel;
   CartCubit({required this.cartRepo}) : super(CartInitial()) {
     cartItems = cartRepo.getCartList();
   }
@@ -17,7 +22,7 @@ class CartCubit extends Cubit<CartState> {
   Future<void> getCartData() async {
     emit(CartLoading());
     try {
-     // final cartItems = await cartRepo.getCartList();
+       cartItems = cartRepo.getCartList();
       final total = _calculateTotal(cartItems);
       emit(CartLoaded(cartItems, total));
     } catch (e) {
@@ -53,7 +58,12 @@ class CartCubit extends Cubit<CartState> {
       emit(CartError());
     }
   }
-
+  bool isProductInCart(int productId) {
+    return cartItems.any((item) => item.product?.id == productId);
+  }
+  CartModel? getCartModel(int productId) {
+    return cartItems.firstWhereOrNull((item) => item.product?.id == productId);
+  }
   double _calculateTotal(List<CartModel> items) {
     double total = 0;
     for (var item in items) {
@@ -119,5 +129,20 @@ class CartCubit extends Cubit<CartState> {
    
     return quantity;
   }
-}
+  bool isAddOnSelected(int productId, int addOnId) {
+    return cartItems
+        .firstWhere(
+          (item) => item.product?.id == productId,
+
+    )
+        .addOnIds
+        ?.any((addOn) => addOn.id == addOnId && addOn.isSelected)
+        ?? false;
+  }
+  void updateTotalPrice (double newValue){
+    totalPrice = totalPrice + newValue;
+
+  }
+  }
+
 
