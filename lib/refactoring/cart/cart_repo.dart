@@ -145,22 +145,24 @@ class CartModel {
 class AddOn {
   int? _id;
   int? _quantity;
+  double? _price;
   bool isSelected;
-
 
   AddOn({
     int? id,
     int? quantity,
-    this.isSelected = false, // Default value
+    double? price=0.0,
+    this.isSelected = false,
   }) {
     _id = id;
     _quantity = quantity;
+    _price = price;
   }
 
   int? get id => _id;
   int? get quantity => _quantity;
+  double? get price => _price;
 
-  // Updated fromJson with default isSelected
   AddOn.fromJson(Map<String, dynamic> json) : isSelected = false {
     _id = json['id'];
     _quantity = json['quantity'];
@@ -170,6 +172,7 @@ class AddOn {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = _id;
     data['quantity'] = _quantity;
+
     return data;
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:testnay/refactoring/config/config_cubit.dart';
-import 'package:testnay/refactoring/home/cubit/product/product_cubit.dart';
+import 'package:testnay/refactoring/home/cubit/product/latestproduct/latest_product_cubit.dart';
+import 'package:testnay/refactoring/home/cubit/product/popular/popular_products_cubit.dart';
+
 import 'package:testnay/refactoring/home/cubit/product/recommaned/recommended_products_cubit.dart';
 import 'package:testnay/refactoring/home/data/product_repository.dart';
 
@@ -16,10 +18,10 @@ import '../../refactoring/noconections/no_connections_screen.dart';
 import '../../refactoring/splash/splash_screen.dart';
 import '../../refactoring/test.dart';
 
-
 class Routes {
   static const String splashScreen = '/splash';
   static const String noInternetContectesdScreen = '/no_internet';
+
   // static const String splashAnimationScreen = '/splash_animation';
   static const String languageScreen = '/select-language';
   static const String onBoardingScreen = '/on_boarding';
@@ -74,54 +76,76 @@ class Routes {
   static const String homeItem = '/home-item';
   static const String otpVerification = '/send-otp-verification';
   static const String otpRegistration = '/otp-registration';
-
 }
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-    //   case Routes.splashScreen:
-    //     return MaterialPageRoute(builder: (_) => BlocProvider.value(
-    // value: sl.get<ConfigCubit>()..loadConfig(),  // Using existing bloc instance
-    //       child: SplashScreen(),
-    //     ));
+      //   case Routes.splashScreen:
+      //     return MaterialPageRoute(builder: (_) => BlocProvider.value(
+      // value: sl.get<ConfigCubit>()..loadConfig(),  // Using existing bloc instance
+      //       child: SplashScreen(),
+      //     ));
 
-            case Routes.splashScreen:
-return MaterialPageRoute(
-    builder: (_) =>
-          BlocProvider(create: (_) =>NetworkCubit()..checkConnectivity(),child: SplashScreen(),
-         ));
+      case Routes.splashScreen:
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider(
+                create: (_) => NetworkCubit()..checkConnectivity(),
+                child: SplashScreen(),
+              ),
+        );
       case 'test':
         return MaterialPageRoute(builder: (_) => const LanguageTestScreen());
       case Routes.noInternetContectesdScreen:
-        return MaterialPageRoute(builder: (_) =>  NoInternetScreen());
+        return MaterialPageRoute(builder: (_) => NoInternetScreen());
       case 'test1':
         return MaterialPageRoute(builder: (_) => const Screen1());
       case Routes.homeScreen:
         return MaterialPageRoute(
-          builder: (_) => MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => BannerCubit(bannerRepository: sl<BannerRepository>())..fetchBanners(),
+          builder:
+              (_) => MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create:
+                        (_) => BannerCubit(
+                          bannerRepository: sl<BannerRepository>(),
+                        )..fetchBanners(),
+                  ),
+                  BlocProvider(
+                    create:
+                        (_) => CategoryCubit(
+                          categoryRepository: sl<CategoryRepository>(),
+                        )..fetchCategories(),
+                  ),
+                  BlocProvider(
+                    create:
+                        (_) => LatestProductCubit(
+                          productRepository: sl<ProductRepository>(),
+                        )..fetchLatestProducts(),
+                  ),
+                  BlocProvider(
+                    create:
+                        (_) => RecommendedProductsCubit(
+                          productRepository: sl<ProductRepository>(),
+                        )..fetchRecommendedProducts(),
+                  ),
+
+                  BlocProvider(
+                    create:
+                        (_) => PopularProductsCubit(
+                      productRepository: sl<ProductRepository>(),
+                    )..fetchLatestProducts(),
+                  ),
+                ],
+                child: HomeScreen(),
               ),
-              BlocProvider(
-                create: (_) => CategoryCubit(categoryRepository: sl<CategoryRepository>())..fetchCategories(),
-              ),
-              BlocProvider(
-                create: (_) => ProductCubit(productRepository: sl<ProductRepository>())..fetchLatestProducts(),
-              ),
-              BlocProvider(
-                create: (_) => RecommendedProductsCubit(productRepository: sl<ProductRepository>())..fetchRecommendedProducts(),
-              ),
-            ],
-            child: HomeScreen(),
-          ),
         );
 
-
       default:
-        return MaterialPageRoute(builder: (_) => Center(child: Text('no route defined'),));
+        return MaterialPageRoute(
+          builder: (_) => Center(child: Text('no route defined')),
+        );
     }
   }
 }
-

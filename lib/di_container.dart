@@ -6,7 +6,8 @@ import 'package:testnay/refactoring/config/config_cubit.dart';
 import 'package:testnay/refactoring/config/config_repo.dart';
 import 'package:testnay/refactoring/home/cubit/banner/banner_cubit.dart';
 import 'package:testnay/refactoring/home/cubit/category/category_cubit.dart';
-import 'package:testnay/refactoring/home/cubit/product/product_cubit.dart';
+import 'package:testnay/refactoring/home/cubit/product/latestproduct/latest_product_cubit.dart';
+import 'package:testnay/refactoring/home/cubit/product/popular/popular_products_cubit.dart';
 import 'package:testnay/refactoring/home/cubit/product/recommaned/recommended_products_cubit.dart';
 import 'package:testnay/refactoring/home/data/banner_repository.dart';
 import 'package:testnay/refactoring/home/data/category_repository.dart';
@@ -30,7 +31,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => ProductRepository(dioClient: sl()));
   sl.registerLazySingleton(() => BannerCubit(bannerRepository: sl()));
   sl.registerLazySingleton(() => CategoryCubit(categoryRepository: sl()));
-  sl.registerLazySingleton(() => ProductCubit(productRepository: sl()));
+  sl.registerLazySingleton(() => LatestProductCubit(productRepository: sl()));
+  //sl.registerLazySingleton(() => PopularProductsCubit(productRepository: sl()));
   sl.registerLazySingleton(() => NetworkCubit());
   sl.registerLazySingleton(() => RecommendedProductsCubit(productRepository: sl()));
 

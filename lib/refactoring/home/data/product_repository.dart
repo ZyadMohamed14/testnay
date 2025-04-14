@@ -15,6 +15,8 @@ class ProductRepository{
   Future<Either<String, ProductModel>>fetchRecommendedProducts()async {
     try {
       final response = await dioClient.get(AppConstants.recommendedProductUri);
+      print('fetchRecommendedProducts');
+      print(response.data);
       final productModel = ProductModel.fromJson(response.data);
 
 
@@ -28,6 +30,8 @@ class ProductRepository{
   Future<Either<String, ProductModel>> fetchLatestProducts() async {
     try {
       final response = await dioClient.get(AppConstants.latestProductUri);
+      print('fetchLatestProducts');
+      print(response.data);
       final productModel = ProductModel.fromJson(response.data);
       return Right(productModel); // Success case returns Right with ProductModel
     } catch (e) {
@@ -35,7 +39,19 @@ class ProductRepository{
       return Left(e.toString()); // Error case returns Left with error message
     }
   }
+  Future<Either<String, ProductModel>> fetchPopularProducts() async {
+    try {
+      final response = await dioClient.get(AppConstants.popularProductUri);
+      print('fetchPopularProducts');
+      print(response.data);
 
+      final productModel = ProductModel.fromJson(response.data);
+      return Right(productModel); // Success case returns Right with ProductModel
+    } catch (e) {
+      print("Error fetching Products: $e");
+      return Left(e.toString()); // Error case returns Left with error message
+    }
+  }
 
 
 }

@@ -1,16 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:testnay/di_container.dart';
-import 'package:testnay/refactoring/home/data/product_repository.dart';
 
-part 'product_state.dart';
+import '../../../../../di_container.dart';
+import '../../../data/product_repository.dart';
 
-class ProductCubit extends Cubit<ProductState> {
+part 'latest_product_state.dart';
+
+class LatestProductCubit extends Cubit<LatestProductState> {
   final ProductRepository productRepository;
-
-
-  ProductCubit({required this.productRepository}) : super(LatestProductInitial());
-
+  LatestProductCubit({required this.productRepository}) : super(LatestProductInitial());
 
   Future<void> fetchLatestProducts() async {
     try {

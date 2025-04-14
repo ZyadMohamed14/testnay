@@ -26,7 +26,6 @@ class CategorySection extends StatelessWidget {
         } else if (state is CategoryError) {
           return Center(child: Text('Error: ${state.message}'));
         } else if (state is CategoryLoaded) {
-          print('revied data ${state.categories}');
           return _buildCategoryList(state.categories,context);
         }
         return Center(child: Text("No categories available"));

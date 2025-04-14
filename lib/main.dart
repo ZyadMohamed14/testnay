@@ -57,8 +57,8 @@ class NayApp extends StatelessWidget {
                 ? TextDirection.rtl
                 : TextDirection.ltr,
             debugShowCheckedModeBanner: false,
-           // locale: Get.deviceLocale,
-            fallbackLocale: const Locale('ar'),
+            locale: Get.deviceLocale,
+            fallbackLocale: const Locale('en'),
             onGenerateRoute: AppRouter.generateRoute,
             initialRoute:Routes.splashScreen,
           );

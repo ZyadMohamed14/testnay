@@ -13,6 +13,7 @@ class CartCubit extends Cubit<CartState> {
   final CartRepository cartRepo;
     List<CartModel>cartItems=[];
     double totalPrice =0.0;
+    double priceForCurrentProduct=0.0;
     late ConfigModel configModel;
   CartCubit({required this.cartRepo}) : super(CartInitial()) {
     cartItems = cartRepo.getCartList();
@@ -28,6 +29,18 @@ class CartCubit extends Cubit<CartState> {
     } catch (e) {
       emit(CartError());
     }
+  }
+
+  void updatePriceForCurrentProduct(Product product) {
+    final cartItem = getCartModel(product.id!);
+    if (cartItem != null) {
+      // Recalculate the price based on quantity and any discounts
+      priceForCurrentProduct = (cartItem.discountedPrice ?? cartItem.product!.price!) * cartItem.quantity!;
+    } else {
+      // If the product is not in the cart, initialize its price
+      priceForCurrentProduct = product.price!;
+    }
+    emit(CartLoaded(cartItems, _calculateTotal(cartItems)));
   }
   Future<void> addToCart(CartModel newItemOrExistingItem) async {
 

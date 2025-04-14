@@ -9,7 +9,7 @@ class CategoryRepository {
   CategoryRepository({required this.dioClient});
   Future<List<CategoryModel>> fetchCategories() async {
 
-    print('dfdfdffffffffffffffffffffffff');
+
     try {
       final response = await dioClient.get(AppConstants.categoryUri);
 

@@ -49,6 +49,7 @@ dependencies:
   dartz: ^0.10.1
   shared_preferences: ^2.2.3
   cached_network_image: ^3.3.1
+  readmore: ^3.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

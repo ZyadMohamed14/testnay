@@ -8,12 +8,14 @@ import 'package:testnay/app_constants.dart';
 import 'package:testnay/di_container.dart';
 import 'package:testnay/refactoring/config/configration_model.dart';
 import 'package:testnay/refactoring/home/widget/stock_avaliable_widget.dart';
+import 'package:testnay/refactoring/product/product_cubit.dart';
 
 import '../../../core/dimensions.dart';
 import '../../../core/helper/price_conventer_helper.dart';
 import '../../../core/helper/product_helper.dart';
 import '../../../utill/images.dart';
 import '../../../utill/styles.dart';
+import '../../TestCartScreen.dart';
 import '../../cart/cart_bottom_sheet.dart';
 import '../../cart/cart_cubit.dart';
 import '../home_screen.dart';
@@ -91,13 +93,20 @@ class ProductImage extends StatelessWidget {
           onTap: (){
             final cartItem = cartCubit.cartItems
                 .firstWhereOrNull((item) => item.product?.id == product.id);
-
             showModalBottomSheet(
+              isScrollControlled: true,
               context: context,
-              builder: (context) => CartBottomSheetWidget(
-                cartModel: cartItem ?? null,
-                configModel: configModel,
+              builder: (context) => BlocProvider(
+              create: (context) => ProductCubit()..initPriceForCurrentProduct(product),
+              child: SizedBox(
+                height: Get.height*0.75,
+                child: CartBottomSheetWidget(
+                  product: product,
+                            //    cartModel: cartItem ?? null,
+                  configModel: configModel,
+                ),
               ),
+),
             );
 
    },

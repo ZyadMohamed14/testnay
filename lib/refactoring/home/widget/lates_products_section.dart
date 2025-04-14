@@ -1,18 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:testnay/refactoring/config/configration_model.dart';
 import 'package:testnay/refactoring/home/widget/product_card.dart';
 
 import '../../../core/dimensions.dart';
 import '../../../di_container.dart';
 import '../../../utill/styles.dart';
+import '../../config/configration_model.dart';
 
-class ChefsRecommendationSection extends StatelessWidget {
+
+
+class ProductSection extends StatelessWidget {
   final List<Product> products;
   final ConfigModel configModel;
+  final String title;
 
-  const ChefsRecommendationSection({super.key, required this.products,required this.configModel});
+  ProductSection({super.key, required this.products,required this.configModel, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +40,7 @@ class ChefsRecommendationSection extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-              'chefs_recommendation'.tr,
+                    title,
                     style: rubikBold.copyWith(
                         color: context.isDarkMode ? null : Colors.white),
                   ),
@@ -49,7 +53,7 @@ class ChefsRecommendationSection extends StatelessWidget {
             SizedBox(
               height: 220, // Adjust this height as needed
               child: ListView.builder(
-               // physics: const ClampingScrollPhysics(),
+                // physics: const ClampingScrollPhysics(),
                 addAutomaticKeepAlives: true, // Preserves state
                 addRepaintBoundaries: true, // Prevents unnecessary repaints
                 cacheExtent: 2000,

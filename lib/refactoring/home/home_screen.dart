@@ -1,25 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:testnay/refactoring/config/config_cubit.dart';
 import 'package:testnay/refactoring/config/configration_model.dart';
-
 import 'package:testnay/refactoring/home/cubit/banner/banner_cubit.dart';
-import 'package:testnay/refactoring/home/cubit/product/product_cubit.dart';
+import 'package:testnay/refactoring/home/cubit/product/latestproduct/latest_product_cubit.dart';
 import 'package:testnay/refactoring/home/widget/banner_section.dart';
 import 'package:testnay/refactoring/home/widget/chef_reco_section.dart';
-
-
+import 'package:testnay/refactoring/home/widget/lates_products_section.dart';
 import '../../core/helper/my_responsive_helper.dart';
-
-import '../../core/routing/app_router.dart';
 import '../images.dart';
-import '../netwrok/network_cubit.dart';
-import 'cubit/product/recommaned/recommended_products_cubit.dart';
+import 'cubit/product/popular/popular_products_cubit.dart';
 import 'cubit/product/recommaned/recommended_products_cubit.dart';
 import 'widget/category_section.dart';
 import 'cubit/category/category_cubit.dart';
@@ -84,7 +77,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 /// Category Widget
                 CategorySection(),
+                BlocBuilder<PopularProductsCubit, PopularProductsState>(
+                  builder: (context, state) {
+                    if (state is PopularProductsLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is PopularProductsLoaded) {
 
+                      return ProductSection(
+                        title: 'local_eats'.tr,
+                        configModel: configModel,
+                        products: state.productModel.products!,);
+                    } else if (state is PopularProductsError) {
+                      return Center(child: Text('Error: ${state.message}'));
+                    }
+                    return const Center(child: Text('No data'));
+                  },
+                ),
+                SizedBox(height: 20,),
                 /// Chefs recommendation Section
                 BlocBuilder<RecommendedProductsCubit, RecommendedProductsState>(
                   builder: (context, state) {
@@ -100,28 +109,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const Center(child: Text('No data'));
                   },
                 ),
-                // Container(
-                //   height: 200, // Give specific height
-                //   child: BlocBuilder<ProductCubit, ProductState>(
-                //     builder: (context, state) {
-                //       if (state is LatestProductLoading) {
-                //         return const Center(child: CircularProgressIndicator());
-                //       } else if (state is LatestProductLoaded) {
-                //         print('Receive Latest');
-                //         return Center(
-                //           child: Text(
-                //             'Latest productLoaded with size ${state.products.products!.length}',
-                //             style: TextStyle(color: Colors.red),
-                //           ),
-                //         );
-                //       } else if (state is LatestProductError) {
-                //         return Center(child: Text('Error: ${state.message}'));
-                //       }
-                //       return const Center(child: Text('No data'));
-                //     },
-                //   ),
-                // ),
 
+              SizedBox(height: 20,),
+                /// Lates  Section
+              BlocBuilder<LatestProductCubit, LatestProductState>(
+                builder: (context, state) {
+                  if (state is LatestProductLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is LatestProductLoaded) {
+
+                    return ProductSection(
+                      title:  'latest_item'.tr,
+                      configModel: configModel,
+                      products: state.productModel.products!,);
+                  } else if (state is LatestProductError) {
+                    return Center(child: Text('Error: ${state.message}'));
+                  }
+                  return const Center(child: Text('No data'));
+                },
+              ),
+                
 
               ],
             ),
