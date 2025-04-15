@@ -51,7 +51,7 @@ class ProductSection extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             SizedBox(
-              height: 220, // Adjust this height as needed
+              height: 250, // Adjust this height as needed
               child: ListView.builder(
                 // physics: const ClampingScrollPhysics(),
                 addAutomaticKeepAlives: true, // Preserves state

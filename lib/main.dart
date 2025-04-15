@@ -29,7 +29,7 @@ class NayApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => ThemeCubit(),
+          create: (_) => ThemeCubit()..toggleTheme(),
         ),
         BlocProvider(
           create: (_) => ConfigCubit(di.sl.get<ConfigRepository>())..loadConfig(),
@@ -51,7 +51,7 @@ class NayApp extends StatelessWidget {
                 PointerDeviceKind.unknown
               },
             ),
-            theme: themeState == AppTheme.dark ? dark : light,
+            theme: themeState == AppTheme.light ? dark : light,
             translations: AppTranslations(),
             textDirection: Get.locale?.languageCode == 'ar'
                 ? TextDirection.rtl

@@ -30,36 +30,91 @@ class ProductCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
     return SizedBox(
+      height: 300,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: DecoratedBox(
             decoration: BoxDecoration(
              color: Theme.of(context).cardColor,
+             boxShadow: [
+               BoxShadow(
+                 color: Theme.of(
+                   context,
+                 ).shadowColor.withOpacity(0.5),
+                 blurRadius: Dimensions.radiusDefault,
+               ),
+             ],
              borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           children: [
             /// for product Image and quantity button and add to fav button
             ProductImage(product: product,configModel: configModel,),
+            const SizedBox(height: 16),
+            /// for product description rating and price
+            Padding(
+              padding: const EdgeInsets.only(left: 4,right: 4),
+              child: Row(mainAxisAlignment:MainAxisAlignment.start,
+                children: [
+                  /// product name
+                  Flexible(child: Text(product.name!, maxLines: 1, overflow: TextOverflow.ellipsis, style: rubikSemiBold)),
+                  const SizedBox(width: Dimensions.paddingSizeSmall),
+                  /// veg and non veg
+                  ProductTagWidget(product: product,),
+                ],
+              ),
+            ),
+            SizedBox(height:product.rating != null && product.rating!.isNotEmpty? 4:12),
+            /// Rating bar
+            product.rating != null && product.rating!.isNotEmpty
+                ? Padding(
+              padding: const EdgeInsets.only(left: 4,right: 4,),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: RatingBarWidget(
+                                  rating: product.rating![0].average!,
+                                  size: 15,
+                                ),
+                  ),
+                )
+                : const SizedBox(height: 4),
 
-            /// for product Descrption rating and price
-           Padding(
-             padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeExtraSmall),
-             child: Column(children: [
-               const SizedBox(height: Dimensions.paddingSizeDefault),
-             Row(mainAxisAlignment:MainAxisAlignment.start,
-             children: [
-               Flexible(child: Text(product.name!, maxLines: 1, overflow: TextOverflow.ellipsis, style: rubikSemiBold)),
-               const SizedBox(width: Dimensions.paddingSizeSmall),
-               ProductTagWidget(product: product,),
+            /// Prices with discount handling
+            Padding(
+              padding: const EdgeInsets.only(left: 4,right: 4,),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // Show original price with strikethrough if discount available
+                  if (product.discount != null && product.discount! > 0)
+                    Text(
+                      PriceConverterHelper.convertPrice(
+                        product.price,
+                        configModel,
+                      ),
+                        style: rubikRegular.copyWith(
+                          fontSize: Dimensions.fontSizeSmall, decoration: TextDecoration.lineThrough, color: Theme.of(context).hintColor,
+                        )
+                    ),
 
-             ],
-             ),
-
-             ],),
-           )
+                  // Show discounted price or regular price
+                  Text(
+                    PriceConverterHelper.convertPrice(
+                      product.discount != null && product.discount! > 0
+                          ? PriceConverterHelper.convertWithDiscount(
+                        product.price,
+                        product.discount,
+                        product.discountType,
+                      )
+                          : product.price,
+                      configModel,
+                    ),
+                    style: rubikBold.copyWith(fontSize: Dimensions.fontSizeSmall),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
 
@@ -87,6 +142,7 @@ class ProductImage extends StatelessWidget {
     bool isAvailableInStock = ProductHelper.checkStock(product);
     bool isDiscountAvailable = product.discount != null && product.discount != 0;
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         /// product Image
         InkWell(
@@ -98,13 +154,10 @@ class ProductImage extends StatelessWidget {
               context: context,
               builder: (context) => BlocProvider(
               create: (context) => ProductCubit()..initPriceForCurrentProduct(product),
-              child: SizedBox(
-                height: Get.height*0.75,
-                child: CartBottomSheetWidget(
-                  product: product,
-                            //    cartModel: cartItem ?? null,
-                  configModel: configModel,
-                ),
+              child: CartBottomSheetWidget(
+                product: product,
+                          //    cartModel: cartItem ?? null,
+                configModel: configModel,
               ),
 ),
             );
@@ -140,22 +193,21 @@ class ProductImage extends StatelessWidget {
           ),
         ),
         /// stock
-        // Positioned.fill(  // This makes it fill the Stack
-        //   child: Center(  // This centers the widget
-        //     child: StockAvailableWidget(
-        //       isAvailable: isAvailable,
-        //       isAvailableInStock: isAvailableInStock,
-        //     ),
-        //   ),
-        // ),
+        Positioned.fill(  // This makes it fill the Stack
+          child: Center(  // This centers the widget
+            child: StockAvailableWidget(
+              isAvailable: isAvailable,
+              isAvailableInStock: isAvailableInStock,
+            ),
+          ),
+        ),
         /// add to cart and add quantity button
         Visibility(
           visible: isAvailable && isAvailableInStock,
           child: Positioned(
-            bottom: 0, // Adds padding from bottom
-            right: isArabicLanguage? Dimensions.paddingSizeSmall:null,
-            left: isArabicLanguage?null:Dimensions.paddingSizeSmall,
-            child: AddToCartButtonWidget(product: product,),
+            bottom: -7,
+
+            child: AddToCartButtonWidget(product: product,configModel: configModel,),
           ),
         ),
       ],

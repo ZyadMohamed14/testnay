@@ -66,7 +66,7 @@ class CartCubit extends Cubit<CartState> {
 
       await cartRepo.addOrUpdatedCartList(cartItems);
       final newTotal = _calculateTotal(cartItems);
-      emit(CartLoaded(cartItems, newTotal));
+      emit(CartUpdated(cartItems, newTotal, CartAction.add));
     } catch (e) {
       emit(CartError());
     }
@@ -94,20 +94,19 @@ class CartCubit extends Cubit<CartState> {
       cartItems.removeAt(cartIndex);
       await cartRepo.addOrUpdatedCartList(cartItems);
       final newTotal = _calculateTotal(cartItems);
-      emit(CartLoaded(cartItems, newTotal));
+      emit(CartUpdated(cartItems, newTotal, CartAction.remove));
     } catch (e) {
       emit(CartError());
     }
   }
   Future<void> UpdateCartItemQuantity(int productId,bool isIncreaseQuantity) async {
-    if (state is! CartLoaded) return;
+    if (state is! CartLoaded && state is! CartUpdated) return;
 
-    final currentState = state as CartLoaded;
     emit(CartLoading());
 
     try {
       // Create new list with updated quantity
-      final updatedItems = currentState.items.map((item) {
+      final updatedItems = cartItems.map((item) {
         if (item.product!.id == productId) {
           if(item.quantity! !=0){
             if(isIncreaseQuantity){
@@ -127,7 +126,7 @@ class CartCubit extends Cubit<CartState> {
       final newTotal = _calculateTotal(cartItems);
 
       // Emit updated state
-      emit(CartLoaded(cartItems, newTotal));
+      emit(CartUpdated(cartItems, newTotal, isIncreaseQuantity ? CartAction.increase : CartAction.decrease));
     } catch (e) {
       emit(CartError());
     }
@@ -154,8 +153,100 @@ class CartCubit extends Cubit<CartState> {
   }
   void updateTotalPrice (double newValue){
     totalPrice = totalPrice + newValue;
+  }
+  Future<void> initializeCart() async {
+    emit(CartLoading());
+    try {
+      final items = cartRepo.getCartList();
+      final total = _calculateTotal(items);
+      emit(CartLoaded(items, total));
+    } catch (e) {
+      emit(CartError());
+    }
+  }
+  Future<void> clearCart() async {
+    emit(CartLoading());
+    try {
+      cartItems.clear();
+      await cartRepo.addOrUpdatedCartList([]);
+      emit(CartUpdated([], 0.0, CartAction.remove));
+    } catch (e) {
+      emit(CartError());
+    }
+  }
+  List<CartModel> get items {
+    if (state is CartLoaded) {
+      return (state as CartLoaded).items;
+    } else if (state is CartUpdated) {
+      return (state as CartUpdated).items;
+    } else {
+      return [];
+    }
+  }
 
+  double get cartTotal {
+    if (state is CartLoaded) {
+      return (state as CartLoaded).total;
+    } else if (state is CartUpdated) {
+      return (state as CartUpdated).total;
+    } else {
+      return 0.0;
+    }
   }
+
+  Future<void> setExactQuantity(int productId, int newQuantity) async {
+    emit(CartLoading());
+    
+    try {
+      // Find the item index and model
+      int itemIndex = -1;
+      CartModel? existingModel;
+      
+      for (int i = 0; i < cartItems.length; i++) {
+        if (cartItems[i].product!.id == productId) {
+          itemIndex = i;
+          existingModel = cartItems[i];
+          break;
+        }
+      }
+      
+      if (itemIndex >= 0 && existingModel != null) {
+        // Remove the existing item
+        cartItems.removeAt(itemIndex);
+        
+        // Create a new cart model with the exact quantity we want
+        CartModel newModel = CartModel(
+          existingModel.price!,
+          existingModel.discountedPrice!,
+          existingModel.variation ?? [],
+          existingModel.discountAmount!,
+          newQuantity, // Set exact quantity
+          existingModel.taxAmount!,
+          existingModel.addOnIds ?? [],
+          existingModel.product!,
+          existingModel.variations ?? [],
+        );
+        
+        // Add the new model to the list
+        cartItems.add(newModel);
+        
+        // Update storage
+        await cartRepo.addOrUpdatedCartList(cartItems);
+        
+        // Calculate the new total and emit the updated state
+        final newTotal = _calculateTotal(cartItems);
+        
+        // Determine the appropriate action
+        CartAction action = (existingModel.quantity ?? 0) < newQuantity 
+            ? CartAction.increase 
+            : CartAction.decrease;
+            
+        emit(CartUpdated(cartItems, newTotal, action));
+      }
+    } catch (e) {
+      emit(CartError());
+    }
   }
+}
 
 

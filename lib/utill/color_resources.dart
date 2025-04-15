@@ -6,9 +6,13 @@ class ThemeCubit extends Cubit<AppTheme> {
   ThemeCubit() : super(AppTheme.dark);
 
   void toggleTheme() {
+
     if (state == AppTheme.light) {
+      print('toggleTheme AppThem ${state}');
       emit(AppTheme.dark);
+
     } else {
+      print('toggleTheme AppThem ${state}');
       emit(AppTheme.light);
     }
   }

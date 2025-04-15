@@ -100,7 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (state is RecommendedProductLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is RecommendedProductLoaded) {
-                      return ChefsRecommendationSection(
+                      return ProductSection(
+                        title: 'chefs_recommendation'.tr,
                         configModel: configModel,
                         products: state.productModel.products!,);
                     } else if (state is RecommendedProductError) {

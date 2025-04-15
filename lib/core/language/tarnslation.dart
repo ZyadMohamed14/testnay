@@ -751,7 +751,11 @@ class AppTranslations extends Translations {
       "your_city_flavor": "نكهة مدينتك، إلى باب بيتك.",
       "location": "الموقع",
       "deliver_to": "التوصيل إلى",
-      "empty_phone_number": "يرجى إدخال رقم هاتف صالح."
+      "empty_phone_number": "يرجى إدخال رقم هاتف صالح.",
+      "quantity_increased": "تم زيادة الكمية",
+      "quantity_decreased": "تم تقليل الكمية",
+      "removed_from_cart": "تمت الإزالة من السلة",
+      "added_to_cart": "تمت الإضافة إلى السلة"
 
     },
     'en': {
@@ -1502,7 +1506,10 @@ class AppTranslations extends Translations {
       "z_to_a" : "Z To A",
       "price_high_to_low" : "Price: High to Low",
       "price_low_to_high": "Price: Low to High",
-      "empty_phone_number": "Please Enter Valid Phone Number"
+      "empty_phone_number": "Please Enter Valid Phone Number",
+      "quantity_increased": "Quantity increased",
+      "quantity_decreased": "Quantity decreased",
+      "removed_from_cart": "Removed from cart"
     },
     // Add more languages
   };
