@@ -755,7 +755,8 @@ class AppTranslations extends Translations {
       "quantity_increased": "تم زيادة الكمية",
       "quantity_decreased": "تم تقليل الكمية",
       "removed_from_cart": "تمت الإزالة من السلة",
-      "added_to_cart": "تمت الإضافة إلى السلة"
+      "added_to_cart": "تمت الإضافة إلى السلة",
+      "main_branch":"الفرع الرئيسي"
 
     },
     'en': {
@@ -1509,7 +1510,8 @@ class AppTranslations extends Translations {
       "empty_phone_number": "Please Enter Valid Phone Number",
       "quantity_increased": "Quantity increased",
       "quantity_decreased": "Quantity decreased",
-      "removed_from_cart": "Removed from cart"
+      "removed_from_cart": "Removed from cart",
+      "main_branch":"Main Branch"
     },
     // Add more languages
   };

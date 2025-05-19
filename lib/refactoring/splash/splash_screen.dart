@@ -23,7 +23,7 @@ class SplashScreen extends StatelessWidget {
       if (!isConnected) {
         Navigator.pushReplacementNamed(context, Routes.homeScreen);
       } else {
-        Navigator.pop(context);
+        Navigator.pushReplacementNamed(context, Routes.noInternetContectesdScreen);
       }
     });
 
