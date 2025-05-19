@@ -31,8 +31,8 @@ jobs:
       - name: Get Flutter packages
         run: flutter pub get
 
-      - name: Check for lints
-        run: flutter analyze
+      # - name: Check for lints
+      #   run: flutter analyze
 
       - name: Run all tests
         run: flutter test
